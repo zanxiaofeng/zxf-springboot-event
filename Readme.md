@@ -2,6 +2,7 @@
 - com.google.common.eventbus.EventBus
 - com.google.common.eventbus.AsyncEventBus
 - com.google.common.eventbus.Subscribe@
+- com.google.common.eventbus.DeadEvent
 - com.google.common.eventbus.SubscriberExceptionHandler
 
 # Key classes for SpringBoot Event
