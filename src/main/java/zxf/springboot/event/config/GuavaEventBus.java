@@ -4,6 +4,7 @@ import com.google.common.eventbus.EventBus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import zxf.springboot.event.exception.EventBusExceptionHandler;
 import zxf.springboot.event.listener.GuavaEventListener;
 
 @Configuration
@@ -13,7 +14,7 @@ public class GuavaEventBus {
 
     @Bean
     public EventBus initialize() {
-        EventBus eventBus = new EventBus();
+        EventBus eventBus = new EventBus(new EventBusExceptionHandler());
         eventBus.register(guavaEventListener);
         return eventBus;
     }
