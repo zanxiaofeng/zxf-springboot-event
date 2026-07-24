@@ -1,28 +1,25 @@
 package zxf.springboot.event.exception;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+/**
+ * Logs Guava EventBus subscriber exceptions via SLF4J (consistent with the rest of the app).
+ *
+ * <p>Guava invokes this only when <em>it</em> dispatches the subscriber — i.e. for the plain
+ * {@code EventBus} and the {@code AsyncEventBus}. A {@code @Async}-on-{@code @Subscribe}
+ * subscriber would instead route its exceptions to Spring's {@code AsyncUncaughtExceptionHandler},
+ * bypassing this handler entirely; that is why async dispatch uses {@code AsyncEventBus} here.
+ */
+@Slf4j
+@Component
 public class EventBusExceptionHandler implements SubscriberExceptionHandler {
+
+    @Override
     public void handleException(Throwable exception, SubscriberExceptionContext context) {
-        Logger logger = logger(context);
-        if (logger.isLoggable(Level.SEVERE)) {
-            logger.log(Level.SEVERE, message(context), exception);
-        }
-
-    }
-
-    private static Logger logger(SubscriberExceptionContext context) {
-        return Logger.getLogger(EventBus.class.getName() + "." + context.getEventBus().identifier());
-    }
-
-    private static String message(SubscriberExceptionContext context) {
-        Method method = context.getSubscriberMethod();
-        return "Exception thrown by subscriber method " + method.getName() + '(' + method.getParameterTypes()[0].getName() + ')' + " on subscriber " + context.getSubscriber() + " when dispatching event: " + context.getEvent();
+        log.error("Guava subscriber {} threw while handling event {}",
+                context.getSubscriber(), context.getEvent(), exception);
     }
 }

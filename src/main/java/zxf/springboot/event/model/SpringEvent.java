@@ -1,14 +1,8 @@
 package zxf.springboot.event.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.io.Serial;
-
-@Data
-@AllArgsConstructor
-public class SpringEvent {
-    @Serial
-    private static final long serial = 1l;
-    private String data;
+/**
+ * Spring ApplicationEvent payload. Since Spring 4.2 an event does not need to extend
+ * {@code ApplicationEvent} — any object can be published via {@code ApplicationEventPublisher}.
+ */
+public record SpringEvent(String data) {
 }
